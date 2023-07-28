@@ -1,18 +1,8 @@
 import re
 
-text1 = '''
-    Natural Language Processing (NLP) 3000 is a branch of Data Science which deals
-with Text data. Apart from numerical data, Text data is available to a great
-extent which is used to analyze and solve business problems. But before using
-the data for analysis or prediction, processing the data is important. To prepare
-the text data for the model building we perform text preprocessing. It is the very
-first step of NLP projects. Some of the preprocessing steps are: Removing
-punctuations like . , ! $( ) * % @, Removing URLs, Removing Stop words,
-Lower casing, Tokenization, Stemming, Lemmatization etc.
-'''
 text = '''
     Hello everyone, Myself Meet 505! My contact details are: meetvsatra@gmail.com,
-80828 00009. @#!$@%#4 a book is a better friend.
+80828 00009. @#!$@%#4 a book is a better friend. U.S. is a country.
 '''
 # Convert text into lower case
 # Remove numbers
@@ -23,8 +13,10 @@ text = '''
 text = text.lower()
 print("Text To Lower:")
 print(text)
+
+
 # Task 2: Remove numbers
-text = re.sub(r'\d+', '', text) # \d+ means digit sequence, it removes digit sequence at once
+text = re.sub(r'\d+', '', text) # \d+ means digit sequence, it removes digit sequence at once 5264
 print("Removing Numbers:")
 print(text)
 
@@ -43,7 +35,10 @@ words = re.sub(r'\.', '', text).split()
 # words = text.split()
 
 # Task 6: Perform sentence tokenization
-sentences = text.split('.')
+# sentences = text.split('.')
+sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', text)
+# (?<!\w\.\w.) U.S.
+# (?<![A-Z][a-z]\.) Dr.
 
 # Task 7: Define a list of stop words
 stop_words = set(['a', 'an', 'the', 'is', 'in', 'and', 'to', 'for', 'of'])
@@ -60,3 +55,30 @@ print("\nSentence Tokens:")
 print(sentences)
 print("\nWord Tokens after removing stop words:")
 print(filtered_words)
+
+
+# Output:
+# Text To Lower:
+#     hello everyone, myself meet 505! my contact details are: meetvsatra@gmail.com,
+# 80828 00009. @#!$@%#4 a book is a better friend. u.s. is a country.
+
+# Removing Numbers:
+#     hello everyone, myself meet ! my contact details are: meetvsatra@gmail.com,
+#  . @#!$@%# a book is a better friend. u.s. is a country.
+
+# Remove punctuations:
+#     hello everyone myself meet  my contact details are meetvsatragmail.com
+#  .  a book is a better friend. u.s. is a country.
+
+# Remove white space:
+# hello everyone myself meet  my contact details are meetvsatragmail.com
+#  .  a book is a better friend. u.s. is a country.
+
+# Word Tokens:
+# ['hello', 'everyone', 'myself', 'meet', 'my', 'contact', 'details', 'are', 'meetvsatragmailcom', 'a', 'book', 'is', 'a', 'better', 'friend', 'us', 'is', 'a', 'country']
+
+# Sentence Tokens:
+# ['hello everyone myself meet  my contact details are meetvsatragmail.com\n .', ' a book is a better friend.', 'u.s. is a country.']
+
+# Word Tokens after removing stop words:
+# ['hello', 'everyone', 'myself', 'meet', 'my', 'contact', 'details', 'are', 'meetvsatragmailcom', 'book', 'better', 'friend', 'us', 'country']
