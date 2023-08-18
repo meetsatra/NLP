@@ -1,0 +1,63 @@
+from collections import Counter
+import pandas as pd
+
+data = '''I book a flight. You book a flight. I read a book. You read. This is a good book to study.'''
+data = data.replace('.', '(eos)')
+sentences = data.split('(eos)')
+
+# Creating the vocabulary
+vocabulary = set()
+for sentence in sentences:
+    words = sentence.split()
+    vocabulary.update(words)
+vocabulary = sorted(vocabulary)
+
+# Create a vocabulary index dictionary
+vocab_index = {word: idx for idx, word in enumerate(vocabulary)}
+
+# Creating the bigram table
+lookup_table = [[0 for _ in range(len(vocabulary))] for _ in range(len(vocabulary))]
+for sentence in sentences:
+    words = sentence.split()
+    for i in range(len(words) - 1):
+        row_idx = vocab_index[words[i]]
+        col_idx = vocab_index[words[i + 1]]
+        lookup_table[row_idx][col_idx] += 1
+
+# Counting word occurrences
+word_counter = Counter()
+for sentence in sentences:
+    words = sentence.split()
+    word_counter.update(words)
+
+# Calculating probabilities and populating the bigram table
+for i in range(len(lookup_table)):
+    total_count = sum(lookup_table[i])
+    for j in range(len(lookup_table)):
+        lookup_table[i][j] = lookup_table[i][j] / word_counter[vocabulary[i]]
+
+# Creating a DataFrame for the table
+df = pd.DataFrame(lookup_table, columns=vocabulary, index=vocabulary)
+
+# Printing the bigram table
+print(df)
+print()
+
+# Given sentences
+given_sentences = [
+    "You read a book",
+    "book a study flight",
+    "I study",
+    "I study flight"
+]
+
+# Calculating probabilities for given sentences
+for sentence in given_sentences:
+    words = sentence.split()
+    probability = 1.0
+    for i in range(len(words) - 1):
+        row_word = words[i]
+        col_word = words[i + 1]
+        probability *= df.loc[row_word, col_word]
+    
+    print(f"Probability of '{sentence}': {probability:.6f}")
