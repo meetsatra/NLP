@@ -1,0 +1,51 @@
+import nltk
+from nltk.corpus import wordnet
+from nltk.tokenize import word_tokenize
+def get_word_senses(word):
+    synsets = wordnet.synsets(word)
+    return synsets
+def get_best_sense(word, context):
+    max_overlap = 0
+    best_sense = None
+    context = set(context)
+    for sense in get_word_senses(word):
+        definition = word_tokenize(sense.definition())
+        overlap = len(set(definition) & context)
+        if overlap > max_overlap:
+            max_overlap = overlap
+            best_sense = sense
+    return best_sense
+
+def disambiguate_word(word, sentence):
+    tokens = word_tokenize(sentence)
+    best_sense = get_best_sense(word, tokens)
+    if best_sense:
+        return f'{word} ({best_sense.name()}: {best_sense.definition()})'
+    else:
+        return word
+    
+
+sentence = "I went to the bank to deposit my money."
+word_to_disambiguate = "bank"
+sense_info = disambiguate_word(word_to_disambiguate, sentence)
+print(sense_info)
+
+sentence_1 = "Give me a cricket bat."
+word_1 = "bat"
+sense_info_1 = disambiguate_word(word_1, sentence_1)
+print(sense_info_1)
+
+sentence_2 = "He wants to buy a mouse for his computer."
+word_2 = "mouse"
+sense_info_2 = disambiguate_word(word_2, sentence_2)
+print(sense_info_2)
+
+sentence_3 = "The dog will run in the park."
+word_3 = "park"
+sense_info_3 = disambiguate_word(word_3, sentence_3)
+print(sense_info_3)
+
+sentence_4 = "She sang a beautiful song."
+word_4 = "song"
+sense_info_4 = disambiguate_word(word_4, sentence_4)
+print(sense_info_4)
